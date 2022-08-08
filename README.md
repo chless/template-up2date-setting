@@ -1,17 +1,20 @@
 # Introduction
-This is general python template equipped with git hooks
+This is pytorch template equipped with git hooks and util tools
 
 ---
 
-# Equipped hooks
-* Black
-* flake8
-* isort
+# Integrated tools
+* Git hooks
+    * Black
+    * flake8
+    * isort
+* Project tracking
+    * Neptune
 
 ---
 
 # Usage
 <span style="color:red">**Before any commit**</span>, follow below instructions.
-1. Install pre-commit package using command `pip install pre-commit`.
+1. Construct your environment using dockerfile or other way.
 2. Install specified git-hooks in .pre-commit-config.yaml using `pre-commit install`.
 3. Do anything.
