@@ -3,9 +3,8 @@ from omegaconf import OmegaConf
 
 
 def init_neptune(cfg):
-    run = neptune.init(project="chless/lg-mi-lithopred")
+    run = neptune.init(project="chanhui-lee/example")
     run["cfg"] = cfg
-    run["data"].track_files(cfg.data.path)
     return run
 
 def get_total_cfg(args):
