@@ -9,10 +9,10 @@ def init_neptune(cfg):
     return run
 
 def get_total_cfg(args):
-    cfg_data = OmegaConf.load(args.cfg_data)
-    cfg_optimizer = OmegaConf.load(args.cfg_optimizer)
-    cfg_model = OmegaConf.load(args.cfg_model)
-    cfg_trainer = OmegaConf.load(args.cfg_trainer)
+    cfg_data = OmegaConf.load(args.cfg_path_data)
+    cfg_optimizer = OmegaConf.load(args.cfg_path_optimizer)
+    cfg_model = OmegaConf.load(args.cfg_path_model)
+    cfg_trainer = OmegaConf.load(args.cfg_path_trainer)
     cfg = OmegaConf.create(
         {
             "data": cfg_data,
