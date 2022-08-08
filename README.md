@@ -11,6 +11,6 @@ This is general python template equipped with git hooks
 ---
 
 # Usage
-1. <span style="color:red; background-color: #F7DDBE">Before any commit:</span> Install pre-commit package using command `pip install pre-commit`.
+1. <span style="color:red">Before any commit,</span> install pre-commit package using command `pip install pre-commit`.
 2. Install specified git-hooks in .pre-commit-config.yaml using `pre-commit install`
 3. Do something.
