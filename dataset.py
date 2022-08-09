@@ -5,7 +5,7 @@ import torch
 
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, X, Y):
+    def __init__(self):
         raise NotImplementedError
 
     def __len__(self):
