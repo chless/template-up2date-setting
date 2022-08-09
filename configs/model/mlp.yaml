@@ -1,1 +1,4 @@
-features: [17, 37, 57]
+script: mlp
+name: MLP
+architecture:
+  features: [17, 37, 57]
