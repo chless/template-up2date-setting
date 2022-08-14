@@ -26,7 +26,7 @@ class Trainer:
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.val_loader = val_loader
-        self.train_epochs = cfg.trainer.train_epochs
+        self.num_epochs = cfg.trainer.num_epochs
         self.val_interval = cfg.trainer.val_interval
         self.test_interval = cfg.trainer.test_interval
         self.ckpt_save_path = cfg.trainer.ckpt_save_path
