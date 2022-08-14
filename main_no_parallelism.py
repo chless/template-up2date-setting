@@ -57,7 +57,7 @@ def main():
     return
 
 
-def get_output():
+def get_output(model, criterion):
     return
 
 
