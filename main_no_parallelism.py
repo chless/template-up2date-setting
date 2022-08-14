@@ -47,8 +47,12 @@ def main():
         run,
     )
 
-    trainer.train(get_output)
-    trainer.test(get_output)
+    if cfg.trainer.mode == "train":
+        trainer.train(get_output)
+    elif cfg.trainer.mode == "test":
+        trainer.test(get_output)
+    else:
+        raise ValueError("specify proper trainer mode")
 
     return
 

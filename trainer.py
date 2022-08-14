@@ -26,6 +26,7 @@ class Trainer:
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.val_loader = val_loader
+        self.mode = cfg.trainer.mode
         self.num_epochs = cfg.trainer.num_epochs
         self.val_interval = cfg.trainer.val_interval
         self.ckpt_save_path = cfg.trainer.ckpt_save_path
@@ -42,6 +43,13 @@ class Trainer:
 
     def train(self, get_output, *args, **kwargs) -> float:
         self.model.train()
+
+        if self.ckpt_load_path is not None:
+            print(f"loading ckpt from {self.ckpt_load_path}")
+            self.load()
+
+        self.model.to(device=self.device)
+
         epoch_iter = tqdm(range(self.train_epochs))
         train_loss, val_loss = 10000.0, 10000.0
         for e in epoch_iter:
@@ -84,15 +92,22 @@ class Trainer:
 
     def validate(self, get_output, *args, **kwargs) -> float:
         self.model.eval()
+        self.model.to(device=self.device)
         val_loss = self.loop(get_output, "val", *args, **kwargs)
         return val_loss
 
     def test(self, get_output, *args, **kwargs) -> float:
         self.model.eval()
+
+        if self.ckpt_load_path is not None and self.mode == "test":
+            print(f"loading ckpt from {self.ckpt_load_path}")
+            self.load()
+
+        self.model.to(device=self.device)
         test_loss = self.loop(get_output, "test", *args, **kwargs)
         return test_loss
 
-    def save(self, epoch):
+    def save(self, tag=None):
         if not os.path.isdir(self.ckpt_save_path):
             os.makedirs(self.ckpt_save_path)
 
@@ -102,13 +117,13 @@ class Trainer:
                 "optimizer_state_dict": self.optimizer.state_dict(),
                 "scheduler_state_dict": self.scheduler.state_dict(),
             },
-            os.path.join(self.ckpt_save_path, f"ckpt_{epoch}.pt"),
+            os.path.join(self.ckpt_save_path, f"ckpt_{tag}.pt"),
         )
         return
 
-    def load(self, load_path):
-        print(f"loading from {load_path}")
-        checkpoint = torch.load(load_path)
+    def load(self):
+        print(f"loading from {self.ckpt_load_path}")
+        checkpoint = torch.load(self.ckpt_load_path)
         self.model.load_state_dict(checkpoint["model_state_dict"])
         self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         self.scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
