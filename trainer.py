@@ -28,7 +28,6 @@ class Trainer:
         self.val_loader = val_loader
         self.num_epochs = cfg.trainer.num_epochs
         self.val_interval = cfg.trainer.val_interval
-        self.test_interval = cfg.trainer.test_interval
         self.ckpt_save_path = cfg.trainer.ckpt_save_path
         self.ckpt_load_path = cfg.trainer.ckpt_load_path
         self.metric = cfg.optimizer.criterion
@@ -44,14 +43,14 @@ class Trainer:
     def train(self, get_output, *args, **kwargs) -> float:
         self.model.train()
         epoch_iter = tqdm(range(self.train_epochs))
-        train_loss, test_loss = 10000.0, 10000.0
+        train_loss, val_loss = 10000.0, 10000.0
         for e in epoch_iter:
             train_loss = self.loop(get_output, "train", *args, **kwargs)
             self.run["train/loss"].log(train_loss)
             epoch_iter.set_description(
                 f"{self.metric} | lr: {self.scheduler.get_last_lr()[-1]} \
                     | train avg loss={train_loss:.5f} \
-                        | test avg loss={test_loss:.5f}"
+                        | val avg loss={val_loss:.5f}"
             )
             self.run["train/lr"].log(self.scheduler.get_last_lr())
             if e % self.val_interval == 0 and e > 0:
