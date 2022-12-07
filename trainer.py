@@ -73,8 +73,7 @@ class Trainer:
             if mode == "train":
                 self.optimizer.zero_grad()
 
-            batch_out = self.get_output(self.model, self.criterion, x, y, *args, **kwgs)
-            loss = batch_out["loss"].mean()
+            loss = self.criterion(x, y).mean()
 
             if mode == "train":
                 loss.backward()
@@ -137,8 +136,3 @@ class Trainer:
             )
         self.grads_abs = np.concatenate((self.grads_abs, grads_abs), axis=0)
         return
-
-    def get_output(self, model, criterion, x, y, *args, **kwargs):
-        out = dict()
-        out["loss"] = criterion(model(x), y)
-        return out
