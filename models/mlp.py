@@ -4,7 +4,7 @@ import torch.nn as nn
 class MLP(nn.Module):
     def __init__(self, cfg):
         super(MLP, self).__init__()
-        self.features = cfg.features
+        self.features = cfg
         self.body = nn.ModuleList()
         for i in range(len(self.features) - 1):
             self.body.append(nn.LayerNorm(self.features[i]))
