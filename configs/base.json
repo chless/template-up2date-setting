@@ -1,14 +1,15 @@
 {
+    "mode": "train",
     "model":{
-        "module": "None",
-        "object": "None",
-        "arguments": "None"
+        "module": "mlp",
+        "object": "MLP",
+        "arguments": [17, 57, 67]
     },
     "trainer":{
         "num_epochs": 1,
         "batch_size": 1,
-        "vain_interval": 1,
-        "ckpt_save_path": "None",
-        "ckpt_load_path": "None"        
+        "val_interval": 1,
+        "ckpt_save_path": null,
+        "ckpt_load_path": null        
     }
 }

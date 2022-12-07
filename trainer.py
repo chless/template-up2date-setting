@@ -7,13 +7,14 @@ from tqdm import tqdm
 
 class Trainer:
     def __init__(
-        cfg,
         self,
+        cfg,
         model,
         optimizer,
         scheduler,
         criterion,
         train_loader,
+        val_loader,
         test_loader,
         device,
     ):
@@ -22,18 +23,19 @@ class Trainer:
         self.criterion = criterion
         self.scheduler = scheduler
         self.train_loader = train_loader
+        self.val_loader = val_loader
         self.test_loader = test_loader
-        self.mode = cfg.trainer.mode
+        self.mode = cfg.mode
         self.num_epochs = cfg.trainer.num_epochs
         self.val_interval = cfg.trainer.val_interval
         self.ckpt_save_path = cfg.trainer.ckpt_save_path
         self.ckpt_load_path = cfg.trainer.ckpt_load_path
         self.device = device
 
-        self.load(self.ckpt_load_path)
+        self.load()
 
 
-    def train(self, get_output, *args, **kwargs) -> float:
+    def train(self, *args, **kwargs) -> float:
         self.model.train()
 
         if self.ckpt_load_path is not None:
@@ -46,7 +48,7 @@ class Trainer:
         train_loss, val_loss = 10000.0, 10000.0
         for e in epoch_iter:
             self.model.train()
-            train_loss = self.loop(get_output, "train", *args, **kwargs)
+            train_loss = self.loop("train", *args, **kwargs)
             epoch_iter.set_description(
                 f"lr: {self.scheduler.get_last_lr()[-1]} \
                     | train avg loss={train_loss:.5f} \
@@ -55,11 +57,11 @@ class Trainer:
             if e % self.val_interval == 0 and e > 0:
                 self.model.eval()
                 self.model.to(device=self.device)
-                val_loss = self.loop(get_output, "val", *args, **kwargs)
+                val_loss = self.loop("val", *args, **kwargs)
                 self.save(e)
         return train_loss
 
-    def loop(self, get_output, mode, *args, **kwgs):
+    def loop(self, mode, *args, **kwgs):
         loss_sum = 0.0
         data_loader = getattr(self, f"{mode}_loader")
         idx, batch = None, None
@@ -71,7 +73,7 @@ class Trainer:
             if mode == "train":
                 self.optimizer.zero_grad()
 
-            batch_out = get_output(self.model, self.criterion, x, y, *args, **kwgs)
+            batch_out = self.get_output(self.model, self.criterion, x, y, *args, **kwgs)
             loss = batch_out["loss"].mean()
 
             if mode == "train":
@@ -82,12 +84,12 @@ class Trainer:
             loss_sum += loss.item()
         return loss_sum / (idx + 1)
 
-    def test(self, get_output, *args, **kwargs) -> float:
+    def test(self, *args, **kwargs) -> float:
         self.model.eval()
         self.load()
 
         self.model.to(device=self.device)
-        test_loss = self.loop(get_output, "test", *args, **kwargs)
+        test_loss = self.loop("test", *args, **kwargs)
         return test_loss
 
     def save(self, tag=None):
@@ -136,6 +138,7 @@ class Trainer:
         self.grads_abs = np.concatenate((self.grads_abs, grads_abs), axis=0)
         return
 
-    def get_output(self):
-        pass
-        return
+    def get_output(self, model, criterion, x, y, *args, **kwargs):
+        out = dict()
+        out["loss"] = criterion(model(x), y)
+        return out
