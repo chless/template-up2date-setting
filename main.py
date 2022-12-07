@@ -36,9 +36,9 @@ def main():
         dataset=test_dataset, batch_size=1, num_workers=0
     )
     trainer = Trainer(
-        cfgs=cfg,
+        cfg=cfg,
         model=model,
-        optmizer=optimizer,
+        optimizer=optimizer,
         scheduler=scheduler,
         criterion=criterion,
         train_loader=train_loader,
