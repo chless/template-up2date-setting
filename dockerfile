@@ -11,7 +11,6 @@ RUN rm /etc/apt/sources.list.d/cuda.list
 RUN apt update
 RUN apt install -y htop wget tmux git python3-pip vim
 RUN pip install pre-commit
-RUN pip install dvc neptune-client h5py
 
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh
 RUN bash Miniconda3-py39_4.10.3-Linux-x86_64.sh -b -p /opt/conda
