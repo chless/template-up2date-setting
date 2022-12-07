@@ -1,0 +1,14 @@
+{
+    "model":{
+        "module": "None",
+        "object": "None",
+        "arguments": "None"
+    },
+    "trainer":{
+        "num_epochs": 1,
+        "batch_size": 1,
+        "vain_interval": 1,
+        "ckpt_save_path": "None",
+        "ckpt_load_path": "None"        
+    }
+}

@@ -1,5 +1,5 @@
-gpu: 0
-cfg_path_data: None
-cfg_path_optimizer: None
-cfg_path_model: None
-cfg_path_trainer: None
+model:
+  module: None
+  object: None
+  arguments: None
+trainer:

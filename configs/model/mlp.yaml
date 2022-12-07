@@ -1,4 +1,0 @@
-script: mlp
-name: MLP
-architecture:
-  features: [17, 37, 57]
