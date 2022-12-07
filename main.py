@@ -1,5 +1,5 @@
 from importlib import import_module
-
+import neptune.new as neptune
 import torch
 
 import utils
@@ -11,6 +11,8 @@ from trainer import Trainer
 def main():
     args = argument_parser()
     cfg = utils.get_cfg(args)
+    run = neptune.init(project="chanhui-lee/example")
+    run["cfg"] = cfg
     device = None
 
     # call module module
@@ -45,6 +47,7 @@ def main():
         val_loader=val_loader,
         test_loader=test_loader,
         device=device,
+        run=run
     )
 
     if cfg.mode == "train":
