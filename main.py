@@ -7,7 +7,7 @@ from arguments import argument_parser
 from trainer import Trainer
 
 
-# This is main funciton using no parallelism, just for style suggestion
+# This is main function using no parallelism, just for style suggestion
 def main():
     args = argument_parser()
     cfg = utils.get_cfg(args)
