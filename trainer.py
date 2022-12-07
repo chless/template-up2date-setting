@@ -3,6 +3,7 @@ import os
 import numpy as np
 import torch
 from tqdm import tqdm
+import plot
 
 
 class Trainer:
@@ -17,6 +18,7 @@ class Trainer:
         val_loader,
         test_loader,
         device,
+        run
     ):
         self.model = model
         self.optimizer = optimizer
@@ -31,6 +33,7 @@ class Trainer:
         self.ckpt_save_path = cfg.trainer.ckpt_save_path
         self.ckpt_load_path = cfg.trainer.ckpt_load_path
         self.device = device
+        self.run = run
 
         self.load()
 
@@ -49,15 +52,19 @@ class Trainer:
         for e in epoch_iter:
             self.model.train()
             train_loss = self.loop("train", *args, **kwargs)
+            self.run["train/loss"].log(train_loss)
+            lr = self.scheduler.get_last_lr()[-1]
             epoch_iter.set_description(
-                f"lr: {self.scheduler.get_last_lr()[-1]} \
+                f"lr: {lr} \
                     | train avg loss={train_loss:.5f} \
                         | val avg loss={val_loss:.5f}"
             )
+            self.run["train/lr"].log(lr)
             if e % self.val_interval == 0 and e > 0:
                 self.model.eval()
                 self.model.to(device=self.device)
                 val_loss = self.loop("val", *args, **kwargs)
+                self.run["val/loss"].log(val_loss)
                 self.save(e)
         return train_loss
 
@@ -74,8 +81,11 @@ class Trainer:
                 self.optimizer.zero_grad()
 
             loss = self.criterion(x, y).mean()
-
             if mode == "train":
+                if idx == 0:
+                    self.log_grads()
+                    plot.plot_grad(self.run, self.grads_abs)
+
                 loss.backward()
                 self.optimizer.step()
                 self.scheduler.step()
@@ -89,6 +99,7 @@ class Trainer:
 
         self.model.to(device=self.device)
         test_loss = self.loop("test", *args, **kwargs)
+        self.run["test/loss"].log(test_loss)
         return test_loss
 
     def save(self, tag=None):
