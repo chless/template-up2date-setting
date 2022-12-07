@@ -8,8 +8,6 @@ This is pytorch template equipped with git hooks and util tools
     * Black
     * flake8
     * isort
-* Project tracking
-    * Neptune
 
 ---
 
