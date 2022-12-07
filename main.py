@@ -1,5 +1,4 @@
 from importlib import import_module
-import neptune.new as neptune
 import torch
 
 import utils
@@ -11,8 +10,7 @@ from trainer import Trainer
 def main():
     args = argument_parser()
     cfg = utils.get_cfg(args)
-    run = neptune.init(project="chanhui-lee/example")
-    run["cfg"] = cfg
+    run = utils.init_neptune(cfg)
     device = None
 
     # call module module
